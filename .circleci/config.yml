@@ -1,34 +1,69 @@
-version: 2
+version: "2"
+
+common_config: &COMMON_CONFIG
+  docker:
+    - image: circleci/node:8.1.2
+  working_directory: "~/test"
+
+common_steps: &COMMON_STEPS
+
+
 jobs:
   build:
-    docker:
-      - image: circleci/node:8.1.2
-    working_directory: ~/repo
+    <<: *COMMON_CONFIG
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - docker-koa-{{ checksum "koa/Dockerfile" }}-{{ checksum "koa/package.json" }}
-          - docker-koa
-      - restore_cache:
-          keys:
-            - docker-testcafe-{{ checksum "testcafe/Dockerfile" }}-{{ checksum "testcafe/package.json" }}
-            - docker-testcafe
-      - run: if test -d ~/repo/.circleci/cache; then \
-               docker load -i ~/repo/.circleci/cache/docker-koa.tar; \
-               docker load -i ~/repo/.circleci/cache/docker-testcafe.tar \
-             fi
+      - setup_remote_docker:
+          reusable: true
+      - run: docker -v
+      - run: docker-compose -v
+
+      # - restore_cache:
+      #     keys:
+      #       - docker-{{ checksum "koa/Dockerfile" }}-{{ checksum "koa/package.json" }}-{{ checksum "testcafe/Dockerfile" }}-{{ checksum "testcafe/package.json" }}
+      # - run:
+      #   name: docker load -i
+      #   command: |
+      #       if [ -e ~/cache/docker-testcafe_testcafe.tar ]; then docker load -i ~/cache/docker-testcafe_testcafe.tar; fi
+      #       if [ -e ~/cache/docker-node.tar ]; then docker load -i ~/cache/docker-node.tar; fi
+      #       if [ -e ~/cache/docker-test_koa.tar ]; then docker load -i ~/cache/docker-test_koa.tar; fi
+      #       if [ -e ~/cache/docker-test_testcafe.tar ]; then docker load -i ~/cache/docker-test_testcafe.tar; fi
 
       - run: docker-compose -f docker-compose.test.yml build
-      - run: mkdir -p ~/repo/.circleci/cache \
-             && docker save -o ~/repo/circleci/cache/docker-koa.tar \
-             && docker save -o ~/repo/circleci/cache/docker-testcafe.tar
-      - save_cache:
-          paths:
-            - ~/repo/circleci/cache/docker-koa.tar
-          key: docker-koa-{{ checksum "koa/Dockerfile" }}-{{ checksum "koa/package.json" }}
-      - save_cache:
-          paths:
-            - ~/repo/circleci/cache/docker-testface.tar
-          key: docker-koa-{{ checksum "testcafe/Dockerfile" }}-{{ checksum "testcafe/package.json" }}
+
+      #
+      # - run:
+      #   name: docker-save -o
+      #   command: |
+      #       if [ ! -d ~/cache ]; then
+      #         docker images
+      #         mkdir -p ~/cache
+      #       fi
+      #       docker save -o ~/cache/docker-testcafe_testcafe.tar testcafe/testcafe
+      #       docker save -o ~/cache/docker-node.tar node
+      #       docker save -o ~/cache/docker-test_koa.tar test_koa
+      #       docker save -o ~/cache/docker-test_testcafe.tar test_testcafe
+      #
+
       - run: docker-compose -f docker-compose.test.yml run testcafe
+
+      # - save_cache:
+      #     paths:
+      #       - ~/cache
+      #     key: docker-{{ checksum "koa/Dockerfile" }}-{{ checksum "koa/package.json" }}-{{ checksum "testcafe/Dockerfile" }}-{{ checksum "testcafe/package.json" }}
+
+  # test:
+  #   <<: *COMMON_CONFIG
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker
+  #     - run: docker-compose -f docker-compose.test.yml run testcafe
+
+# workflows:
+#   version: 2
+#   build_and_test:
+#     jobs:
+#       - build
+#       - test:
+#           requires:
+#             - build
