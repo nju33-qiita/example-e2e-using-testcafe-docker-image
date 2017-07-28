@@ -32,6 +32,7 @@ jobs:
             - ~/repo/circleci/cache/docker-testface.tar
           key: docker-koa-{{ checksum "testcafe/Dockerfile" }}-{{ checksum "testcafe/package.json" }}
       - run: docker-compose -f docker-compose.test.yml run testcafe
+
  workflows:
     version: 2
     build_and_test:
