@@ -1,0 +1,14 @@
+version: '3'
+services:
+  koa:
+    build:
+      context: ./koa
+  testcafe:
+    build:
+      context: ./testcafe
+    # image: testcafe/testcafe
+    depends_on:
+      - koa
+    volumes:
+      - './testcafe/tests:/var/src/test/tests'
+    command: '"chromium --no-sandbox" /var/src/test/tests/*'

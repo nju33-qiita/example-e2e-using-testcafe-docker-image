@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "dependencies": {
+    "koa": "^2.3.0"
+  },
+  "scripts": {
+    "serve": "node index.js"
+  }
+}
