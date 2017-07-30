@@ -29,7 +29,7 @@ jobs:
       #       if [ -e ~/cache/docker-test_koa.tar ]; then docker load -i ~/cache/docker-test_koa.tar; fi
       #       if [ -e ~/cache/docker-test_testcafe.tar ]; then docker load -i ~/cache/docker-test_testcafe.tar; fi
 
-      - run: sudo docker-compose -f docker-compose.test.yml build
+      - run: docker-compose -f docker-compose.test.yml build
 
       #
       # - run:
@@ -45,7 +45,7 @@ jobs:
       #       docker save -o ~/cache/docker-test_testcafe.tar test_testcafe
       #
 
-      - run: sudo docker-compose -f docker-compose.test.yml run testcafe
+      - run: docker-compose -f docker-compose.test.yml run testcafe
 
       # - save_cache:
       #     paths:
