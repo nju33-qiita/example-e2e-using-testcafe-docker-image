@@ -29,23 +29,23 @@ jobs:
       #       if [ -e ~/cache/docker-test_koa.tar ]; then docker load -i ~/cache/docker-test_koa.tar; fi
       #       if [ -e ~/cache/docker-test_testcafe.tar ]; then docker load -i ~/cache/docker-test_testcafe.tar; fi
 
-      - restore_cache:
-          keys:
-            - koa-node_modules-{{ checksum "koa/yarn.lock" }}
-      - restore_cache:
-          keys:
-            - testcafe-node_modules-{{ checksum "testcafe/yarn.lock" }}
+      # - restore_cache:
+      #     keys:
+      #       - koa-node_modules-{{ checksum "koa/yarn.lock" }}
+      # - restore_cache:
+      #     keys:
+      #       - testcafe-node_modules-{{ checksum "testcafe/yarn.lock" }}
 
       - run: docker-compose -f docker-compose.ci.yml build
 
-      - save_cache:
-          key: koa-node_modules-{{ checksum "koa/yarn.lock" }}
-          paths:
-            - koa/node_modules
-      - save_cache:
-          key: testcafe-node_modules-{{ checksum "testcafe/yarn.lock" }}
-          paths:
-            - testcafe/node_modules
+      # - save_cache:
+      #     key: koa-node_modules-{{ checksum "koa/yarn.lock" }}
+      #     paths:
+      #       - koa/node_modules
+      # - save_cache:
+      #     key: testcafe-node_modules-{{ checksum "testcafe/yarn.lock" }}
+      #     paths:
+      #       - testcafe/node_modules
 
       #
       # - run:
