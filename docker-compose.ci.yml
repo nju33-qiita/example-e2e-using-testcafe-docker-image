@@ -8,8 +8,6 @@ services:
       context: ./testcafe
     depends_on:
       - koa
-    volumes:
-      - './testcafe:/var/src/test'
     command: >
       "chromium:headless --no-sandbox"
       /var/src/test/tests/*

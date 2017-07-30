@@ -1,0 +1,9 @@
+version: '3'
+services:
+  koa:
+    build:
+      context: ./koa
+    ports:
+      - '3000:3000'
+    volumes:
+      - './koa:/var/src/app'
